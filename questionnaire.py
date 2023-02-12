@@ -56,11 +56,20 @@ class Questionnaire:
         self.difficulte = difficulte
 
     def from_json_data(data):
+        if not data.get("questions"): # S'il n'y a pas de question dans le questionnaire
+            return None # on retourne un questionnaire vide
         questionnaire_data_questions =  data["questions"]
         questions = [Question.from_json_data(i) for i in questionnaire_data_questions]
         # Supprime les questions None (qui n'ont pas pu être crées)
         questions = [i for i in questions if i]
 
+        #DEBUG en cas de champs manquant sur le questionnaire fichier json
+        if not data.get("categorie"): # s'il n'y a pas de champs catégorie
+            data["categorie"] = "inconnue" # on qualifie la catégorie d'inconnue afin d'éviter de faire bugger le programme
+        if not data.get("difficulte"): # idem avec la difficulté
+            data["difficulte"] = "inconnue"
+        if not data.get("titre"): # s'il n'y a pas de titre
+            return None  # on ne retourne pas de questionnaire
         return Questionnaire(questions, data["categorie"], data["titre"], data["difficulte"])
 
     def from_json_file(filename):
@@ -94,14 +103,14 @@ class Questionnaire:
         return score
 
 
+if __name__ == "__main__":
+    # Questionnaire.from_json_file("animaux_leschats_confirme.json").lancer()
 
-# Questionnaire.from_json_file("animaux_leschats_confirme.json").lancer()
+    if len(sys.argv) < 2:
+        print("ERREUR : Vous devez spécifier le nom du fichier json à charger")
+        exit(0)
 
-if len(sys.argv) < 2:
-    print("ERREUR : Vous devez spécifier le nom du fichier json à charger")
-    exit(0)
-
-json_filename = sys.argv[1]
-questionnaire = Questionnaire.from_json_file(json_filename)
-if questionnaire:
-    questionnaire.lancer()
+    json_filename = sys.argv[1]
+    questionnaire = Questionnaire.from_json_file(json_filename)
+    if questionnaire:
+        questionnaire.lancer()

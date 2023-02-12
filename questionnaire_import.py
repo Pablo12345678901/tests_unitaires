@@ -2,6 +2,7 @@ import requests
 import json
 import unicodedata
 
+
 open_quizz_db_data = (
     ("Animaux", "Les chats", "https://www.codeavecjonathan.com/res/mission/openquizzdb_50.json"),
     ("Arts", "Musée du Louvre", "https://www.codeavecjonathan.com/res/mission/openquizzdb_86.json"),
@@ -51,7 +52,7 @@ def generate_json_file(categorie, titre, url):
             print(f"Exception dans la désérialisation ou l'utilisation des données (questionnaire : {titre}, url: {url})")
 
     
-
-for quizz_data in open_quizz_db_data:
-    generate_json_file(quizz_data[0], quizz_data[1], quizz_data[2])
+if __name__ == "__main__":
+    for quizz_data in open_quizz_db_data:
+        generate_json_file(quizz_data[0], quizz_data[1], quizz_data[2])
 
