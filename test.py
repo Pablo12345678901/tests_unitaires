@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 import questionnaire
+import os
 
 def additionner(a, b):
     return a+b
@@ -50,5 +51,19 @@ class TestsQuestion(unittest.TestCase):
             self.assertTrue(q.poser(1, 1)) # idem pour une bonne réponse -> True
         with patch("builtins.input", return_value="3"): 
             self.assertFalse(q.poser(1, 1)) # Test de toutes les réponses possibles
+
+class TestsQuestionnaire(unittest.TestCase):
+    def test_questionnaire_lancer_alien_debutant(self):
+        filename = os.path.join("test_data", "cinema_alien_debutant.json") # technique pour concaténer les chemins pour tous les os
+        q = questionnaire.Questionnaire.from_json_file(filename)
+        self.assertIsNotNone(q) # tester si le questionnaire n'est pas None
+        
+        self.assertEqual(len(q.questions), 10) # Nb de questions > tester si le nombre de questions est correct > ici = 10
+        self.assertEqual(q.titre, 'Alien') # titre
+        self.assertEqual(q.categorie, 'Cinéma') # catégorie
+        self.assertEqual(q.difficulte, 'débutant') # difficulté
+        # patcher le input -> forcer de répondre toujours à 1 > score final = 4/10
+        with patch("builtins.input", return_value="1"):
+            self.assertEqual(q.lancer(), 4)
 
 unittest.main()
